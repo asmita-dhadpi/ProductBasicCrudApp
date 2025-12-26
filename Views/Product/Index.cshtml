@@ -2,7 +2,26 @@
 
 <h2>Product List</h2>
 
-<a asp-action="Create" class="btn btn-primary">Add Product</a>
+<a asp-action="Create" class="btn btn-primary mb-3">Add Product</a>
+<form method="get" asp-action="Index">
+    <div class="input-group">
+        <input type="text"
+               name="searchTerm"
+               value="@ViewBag.SearchTerm"
+               class="form-control"
+               placeholder="Search by name or category" />
+
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+
+        <!-- Reset Button -->
+        <a asp-action="Index" class="btn btn-secondary">
+            Reset
+        </a>
+    </div>
+</form>
+
 
 <table class="table mt-3">
     <tr>
@@ -28,3 +47,22 @@
         </tr>
     }
 </table>
+@if (ViewBag.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-searchTerm="@ViewBag.SearchTerm">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+

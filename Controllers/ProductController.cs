@@ -12,10 +12,36 @@ namespace ProductCrudApp.Controllers
         {
             _context = context;
         }
-
-        public IActionResult Index()
+        public IActionResult Index(string searchTerm, int page = 1)
         {
-            return View(_context.Products.ToList());
+            int pageSize = 5; // records per page
+
+            var query = _context.Products.AsQueryable();
+
+            // SEARCH
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p =>
+                    p.Name.ToLower().Contains(searchTerm.ToLower()) ||
+                    p.Category.ToLower().Contains(searchTerm.ToLower()));
+            }
+
+            // PAGINATION
+            int totalRecords = query.Count();
+
+            var products = query
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+            ViewBag.SearchTerm = searchTerm;
+
+            return View(products);
+            //    return View(_context.Products.ToList());
+
         }
 
         public IActionResult Create()
