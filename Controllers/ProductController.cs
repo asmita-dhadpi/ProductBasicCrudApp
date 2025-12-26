@@ -20,11 +20,25 @@ namespace ProductCrudApp.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            var product = new Product
+            {
+                IsActive = true
+            };
+
+            return View(product);
         }
         [HttpPost]
         public IActionResult Create(Product product)
         {
+            bool isDuplicate = _context.Products
+            .Any(p => p.Name == product.Name &&
+                  p.Category == product.Category);
+
+            if (isDuplicate)
+            {
+                ModelState.AddModelError("",
+                    "Product with the same name and category already exists.");
+            }
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
@@ -42,9 +56,23 @@ namespace ProductCrudApp.Controllers
         [HttpPost]
         public IActionResult Edit(Product product)
         {
-            _context.Products.Update(product);
-            _context.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            bool isDuplicate = _context.Products
+       .Any(p => p.Id != product.Id &&
+                 p.Name == product.Name &&
+                 p.Category == product.Category);
+
+            if (isDuplicate)
+            {
+                ModelState.AddModelError("",
+                    "Another product with the same name and category already exists.");
+            }
+            if (ModelState.IsValid)
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
         }
 
         public IActionResult Details(int id)

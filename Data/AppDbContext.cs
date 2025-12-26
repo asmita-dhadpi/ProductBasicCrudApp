@@ -12,5 +12,11 @@ namespace ProductCrudApp.Data
         }
 
         public DbSet<Product> Products { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => new { p.Name, p.Category })
+                .IsUnique();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿@model ProductCrudApp.Models.Product
 
 <h2>Edit Product</h2>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
@@ -13,11 +14,14 @@
     <div class="form-group">
         <label>Category</label>
         <input asp-for="Category" class="form-control" />
+        <span asp-validation-for="Category" class="text-danger"></span>
+
     </div>
 
     <div class="form-group">
         <label>Price</label>
-        <input asp-for="Price" class="form-control" />
+        <input asp-for="Price" class="form-control" step="0.01" />
+        <span asp-validation-for="Price" class="text-danger"></span>
     </div>
 
     <div class="form-group">
